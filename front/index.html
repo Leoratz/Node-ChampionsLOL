@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Liste des champions</h1>
+    <input type="text" name="champion" placeholder="Name">
+    <input type="text" name="type" placeholder="Type">
+    <button type="button" onclick="addChampion()">New champion</button>
+    <div id="champions"></div>
+
+    <script>
+        fetch('http://localhost:3000/champions')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                let champions = document.querySelector('#champions')
+                data.forEach(champion => {
+                    champions.innerHTML += `
+                    <a href="champion.html?id=${champion.id}">
+                        <h2>${champion.name}</h2>
+                    </a>
+                    <p>${champion.type}</p>
+                    `
+                })
+            })
+
+        const addChampion = async () => {
+            let champion = document.querySelector('input[name="champion"]').value
+            let type = document.querySelector('input[name="type"]').value
+
+            let response = await fetch('http://localhost:3000/champions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: champion, type: type})
+            })
+
+            window.location.href = 'index.html'
+        }
+    </script>
+</body>
+</html>
